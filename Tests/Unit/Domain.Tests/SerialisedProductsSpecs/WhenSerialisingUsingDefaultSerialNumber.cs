@@ -14,14 +14,14 @@
         [SetUp]
         public void EstablishContext()
         {
-            this.SerialNumberFactory.Create().Returns(ExpectedSerialNumber);
+            this.SerialNumberFactory.Create(1).Returns(new[] { ExpectedSerialNumber });
             this.Sut.GenerateSerialNumber(this.SerialNumberFactory);
         }
 
         [Test]
         public void ShouldSetSerialNumber()
         {
-            this.Sut.SerialNumber.Should().Be(ExpectedSerialNumber);
+            this.Sut.SerialNumber.Should().ContainInOrder(ExpectedSerialNumber);
         }
     }
 }
