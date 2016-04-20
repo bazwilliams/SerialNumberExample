@@ -6,7 +6,7 @@ before_install:
   - wget --no-check-certificate https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 install:
   - mono ./nuget.exe restore SerialNumberExample.sln -Verbosity quiet 
-  - mono ./nuget.exe install NUnit.Runners -Version 3.0.1
+  - mono ./nuget.exe install NUnit.Runners -Version 3.0.1 -o packages
 before_script:
   - docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD -e $DOCKER_HUB_EMAIL
 script:
