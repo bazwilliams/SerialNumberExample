@@ -1,5 +1,7 @@
 ﻿namespace SerialNumber.Service.Extensions
 {
+    using System.Linq;
+
     using SerialNumber.Domain;
     using SerialNumber.Resources;
 
@@ -7,11 +9,11 @@
     {
         public static SerialisedProductResource ToResource(this SerialisedProduct domain)
         {
-            return domain.SerialNumber.HasValue
+            return domain.SerialNumber.Any()
                 ? new SerialisedProductResource
                            {
                                productName = domain.ProductName,
-                               serialNumber = domain.SerialNumber.Value
+                               serialNumber = domain.SerialNumber
                            }
                 : null;
         }

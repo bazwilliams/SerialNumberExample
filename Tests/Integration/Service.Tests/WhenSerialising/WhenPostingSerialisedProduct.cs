@@ -40,7 +40,7 @@
         {
             var resource = this.response.Body.DeserializeJson<SerialisedProductResource>();
             resource.productName.Should().Be(ProductName);
-            resource.serialNumber.Should().Be(this.ExpectedSerialNumber);
+            resource.serialNumber.Should().ContainInOrder(this.ExpectedSerialNumber);
         }
     }
 }

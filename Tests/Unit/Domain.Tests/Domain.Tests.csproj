@@ -58,7 +58,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerialisedProductsSpecs\ContextBase.cs" />
-    <Compile Include="SerialisedProductsSpecs\WhenSerialising.cs" />
+    <Compile Include="SerialisedProductsSpecs\WhenSerialisingUsingDefaultSerialNumber.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

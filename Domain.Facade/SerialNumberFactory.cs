@@ -1,5 +1,7 @@
 ﻿namespace SerialNumber.Domain.Facade
 {
+    using System.Collections.Generic;
+
     using SerialNumber.Domain.Factories;
 
     public class SerialNumberFactory : ISerialNumberFactory
@@ -11,9 +13,15 @@
             this.nextVal = seed;
         }
 
-        public int Create()
+        public IEnumerable<int> Create(int numberRequired)
         {
-            return this.nextVal++;
+            var serialNumbers = new List<int>();
+            for (var i = 0; i < numberRequired; i++)
+            {
+                serialNumbers.Add(this.nextVal++);
+            }
+
+            return serialNumbers;
         }
     }
 }

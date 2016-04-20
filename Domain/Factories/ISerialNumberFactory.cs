@@ -1,7 +1,9 @@
 ﻿namespace SerialNumber.Domain.Factories
 {
+    using System.Collections.Generic;
+
     public interface ISerialNumberFactory
     {
-        int Create();
+        IEnumerable<int> Create(int numberRequired);
     }
 }
