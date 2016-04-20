@@ -1,0 +1,17 @@
+bin/
+obj/
+*.[Rr]e[Ss]harper*
+*[Nn]crunch*
+/MyLinn.sln.DotSettings.user
+*.csproj.user
+log.txt
+*/logs/*
+packages/*
+/.vs
+.env
+TestResult.xml
+testrunner
+nuget.exe
+coverage.json
+TestResults/
+App.config
