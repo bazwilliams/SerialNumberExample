@@ -21,7 +21,7 @@ appconfig:
 	cp Service.App/App.config.template Service.App/App.config
 	
 compile: clean appconfig
-	xbuild /p:TargetFrameworkVersion="v4.5" /p:Configuration=Release SerialNumberExample.sln
+	xbuild /verbosity:quiet /p:TargetFrameworkVersion="v4.5" /p:Configuration=Release SerialNumberExample.sln
 	
 test: 
 	mono ./packages/NUnit.Console.3.0.1/tools/nunit3-console.exe -workers 1 `(find Tests -name *Tests.dll | grep -v obj/Release)`
