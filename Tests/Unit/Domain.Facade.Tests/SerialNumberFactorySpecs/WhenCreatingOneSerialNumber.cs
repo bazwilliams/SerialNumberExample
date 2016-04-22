@@ -1,24 +1,26 @@
 ﻿namespace Domain.Facade.Tests.SerialNumberFactorySpecs
 {
+    using System.Collections.Generic;
+
     using FluentAssertions;
 
     using NUnit.Framework;
 
     [TestFixture]
-    public class WhenCreating : ContextBase
+    public class WhenCreatingOneSerialNumber : ContextBase
     {
-        private int result;
+        private IEnumerable<int> result;
 
         [SetUp]
         public void EstablishContext()
         {
-            this.result = this.Sut.Create();
+            this.result = this.Sut.Create(1);
         }
 
         [Test]
         public void ShouldGiveBackSeededSerialNumber()
         {
-            this.result.Should().Be(this.SerialNumberSeed);
+            this.result.Should().ContainInOrder(this.SerialNumberSeed);
         }
     }
 }

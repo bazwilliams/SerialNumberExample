@@ -17,7 +17,7 @@
         [SetUp]
         public void CommonContext()
         {
-            this.Sut = new SerialisedProduct { ProductName = "Sondek LP12" };
+            this.Sut = new SerialisedProduct { ProductName = "Sondek LP12", SerialNumberType = new DefaultSerialNumberType() };
             this.SerialNumberFactory = Substitute.For<ISerialNumberFactory>();
         }
     }

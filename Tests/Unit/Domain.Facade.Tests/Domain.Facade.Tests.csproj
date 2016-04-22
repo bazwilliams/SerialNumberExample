@@ -53,10 +53,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SerialisedProductFactorySpecs\ContextBase.cs" />
+    <Compile Include="SerialisedProductFactorySpecs\WhenCreatingSpeakers.cs" />
     <Compile Include="SerialisedProductFactorySpecs\WhenCreating.cs" />
     <Compile Include="SerialNumberFactorySpecs\ContextBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerialNumberFactorySpecs\WhenCreating.cs" />
+    <Compile Include="SerialNumberFactorySpecs\WhenCreatingMultipleSerialNumbers.cs" />
+    <Compile Include="SerialNumberFactorySpecs\WhenCreatingOneSerialNumber.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

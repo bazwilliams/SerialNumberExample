@@ -8,7 +8,7 @@
     using SerialNumber.Resources;
 
     [TestFixture]
-    public class WhenCreating : ContextBase
+    public class WhenCreatingSpeakers : ContextBase
     {
         private CreateSerialisedProductResource resource;
 
@@ -17,7 +17,7 @@
         [SetUp]
         public void EstablishContext()
         {
-            this.resource = new CreateSerialisedProductResource { productName = "Test" };
+            this.resource = new CreateSerialisedProductResource { productName = "Speakers", productType = "speakers" };
             this.result = this.Sut.Create(this.resource);
         }
 
@@ -36,7 +36,7 @@
         [Test]
         public void ShouldHaveDefaultSerialNumberType()
         {
-            this.result.SerialNumberType.Should().BeOfType<DefaultSerialNumberType>();
+            this.result.SerialNumberType.Should().BeOfType<PairedSerialNumberType>();
         }
     }
 }
