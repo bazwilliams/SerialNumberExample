@@ -20,6 +20,10 @@ clean:
 	-find -type d -name bin -exec rm -rf {} \;
 	-find -type d -name obj -exec rm -rf {} \;
 
+nuget:
+	mkdir -p ./packages
+	wget -O ./packages/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+
 nuget-restore:
 	mono ./packages/nuget.exe restore $(SOLUTION) -Verbosity quiet 
 
