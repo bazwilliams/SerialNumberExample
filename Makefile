@@ -1,4 +1,7 @@
-SERIAL_NUMBER_DOCKER_NAME := bazwilliams/serial-number-service
+DOCKER_NAME := bazwilliams/serial-number-service
+DOCKER_PROJECT := Service.App
+SOLUTION := SerialNumberExample.sln
+
 DOCKER_BRANCH_TAG := $(shell echo ${TRAVIS_BRANCH} | sed s/\#/_/g)
 
 define tag_docker
@@ -17,22 +20,28 @@ clean:
 	-find -type d -name bin -exec rm -rf {} \;
 	-find -type d -name obj -exec rm -rf {} \;
 
+nuget-restore:
+	mono ./packages/nuget.exe restore $(SOLUTION) -Verbosity quiet 
+
+testrunner:
+	mono ./packages/nuget.exe install NUnit.Runners -Version 3.0.1 -o packages
+
 appconfig:
-	cp Service.App/App.config.template Service.App/App.config
+	cp $(DOCKER_PROJECT)/App.config.template $(DOCKER_PROJECT)/App.config
 	
-compile: clean appconfig
-	xbuild /verbosity:quiet /p:TargetFrameworkVersion="v4.5" /p:Configuration=Release SerialNumberExample.sln
+compile: clean nuget-restore appconfig
+	xbuild /verbosity:minimal /p:TargetFrameworkVersion="v4.5" /p:Configuration=Release $(SOLUTION)
 	
-test: 
+test: testrunner
 	mono ./packages/NUnit.Console.3.0.1/tools/nunit3-console.exe -workers 1 `(find Tests -name *Tests.dll | grep -v obj/Release)`
 
-$(SERIAL_NUMBER_DOCKER_NAME): compile
-	docker build -t $(SERIAL_NUMBER_DOCKER_NAME):$(TRAVIS_BUILD_NUMBER) Service.App
+$(DOCKER_NAME): compile
+	docker build -t $(DOCKER_NAME):$(TRAVIS_BUILD_NUMBER) $(DOCKER_PROJECT)
 
-all-the-dockers: $(SERIAL_NUMBER_DOCKER_NAME)
+all-the-dockers: $(DOCKER_NAME)
 
 docker-tag:
-	$(call tag_docker, $(SERIAL_NUMBER_DOCKER_NAME))
+	$(call tag_docker, $(DOCKER_NAME))
 
 docker-push:
-	docker push $(SERIAL_NUMBER_DOCKER_NAME)
+	docker push $(DOCKER_NAME)
