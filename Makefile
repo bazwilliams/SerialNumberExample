@@ -25,7 +25,7 @@ nuget:
 	wget -O ./packages/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 
 nuget-restore:
-	mono ./packages/nuget.exe restore $(SOLUTION) -Verbosity quiet 
+	mono ./packages/nuget.exe restore $(SOLUTION) 
 
 testrunner:
 	mono ./packages/nuget.exe install NUnit.Runners -Version 3.0.1 -o packages
