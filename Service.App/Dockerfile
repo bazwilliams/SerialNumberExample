@@ -9,16 +9,3 @@ ADD ./App.config.template /app/
 RUN apt-get update && apt-get install -y gettext-base
 
 CMD envsubst < /app/App.config.template > /app/App.exe.config; mono /app/App.exe
-LABEL org.label-schema.vendor="Barry John Williams" \
-      org.label-schema.build-date="2016-09-12T10:47:01Z" \
-      org.label-schema.docker.dockerfile="/Dockerfile" \
-      org.label-schema.license="MIT" \
-      org.label-schema.name="Serial Number Example" \
-      org.label-schema.version="sne" \
-      org.label-schema.url="https://blog.bjw.me.uk/" \
-      org.label-schema.vcs-ref="427617b" \
-      org.label-schema.vcs-type="Git" \
-      org.label-schema.vcs-url="https://github.com/bazwilliams/SerialNumberExample" \
-      uk.me.bjw.build-number="sne" \
-      uk.me.bjw.branch="dev" \
-      uk.me.bjw.is-production="false"
