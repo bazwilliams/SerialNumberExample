@@ -1,4 +1,6 @@
 language: csharp
+mono: none
+dotnet: 1.0.0
 cache:
   directories:
     - packages

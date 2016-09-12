@@ -58,10 +58,10 @@ $(NUGET):
 	@chmod +x $(NUGET)
 
 nuget-restore: $(NUGET)
-	@mono $(NUGET) restore $(SOLUTION) -Verbosity quiet
+	@$(NUGET) restore $(SOLUTION) -Verbosity quiet
 
 $(NUNIT_RUNNER): $(NUGET)
-	@mono $(NUGET) install NUnit.Runners -Verbosity quiet -Version 3.4.0 -o packages -source "https://api.nuget.org/v3/index.json"
+	@$(NUGET) install NUnit.Runners -Verbosity quiet -Version 3.4.0 -o packages -source "https://api.nuget.org/v3/index.json"
 	@chmod +x $(NUNIT_RUNNER)
 
 configure:
