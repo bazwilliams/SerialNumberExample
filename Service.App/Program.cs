@@ -3,29 +3,43 @@
     using System;
     using System.Configuration;
 
-    using Microsoft.Owin.Hosting;
+    using Mono.Unix;
+    using Mono.Unix.Native;
+
+    using Nancy.Hosting.Self;
 
     public class Program
     {
         public static void Main(string[] args)
         {
             Console.WriteLine("Loading...");
+
             var baseUrl = ConfigurationManager.AppSettings["BaseUrl"];
-            using (WebApp.Start<Startup>(baseUrl))
+
+            var host = new NancyHost(new Bootstrapper(), new Uri(baseUrl));
+            host.Start();
+
+            Console.WriteLine($"Running on {baseUrl}");
+            Console.WriteLine("Press Ctrl-C to exit");
+
+            // check if we're running on mono
+
+            if (Type.GetType("Mono.Runtime") != null)
             {
-                Console.WriteLine($"Running on {baseUrl}");
-
-                Console.WriteLine("Press X to close");
-
-                while (true)
-                {
-                    if (Console.ReadKey(true).Key == ConsoleKey.X)
-                    {
-                        Console.WriteLine("Closing...");
-                        break;
-                    }
-                }
+                // on mono, processes will usually run as daemons - this allows you to listen
+                // for termination signals (ctrl+c, shutdown, etc) and finalize correctly
+                UnixSignal.WaitAny(
+                    new[]
+                        {
+                            new UnixSignal(Signum.SIGINT), new UnixSignal(Signum.SIGTERM), new UnixSignal(Signum.SIGQUIT),
+                            new UnixSignal(Signum.SIGHUP)
+                        });
             }
+            else
+            {
+                Console.ReadLine();
+            }
+
             Console.WriteLine("Closed");
         }
     }

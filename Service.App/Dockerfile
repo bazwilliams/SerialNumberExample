@@ -1,6 +1,6 @@
 FROM mono:latest
 
-EXPOSE 8888
+EXPOSE 8080
 
 ADD ./bin/Release/App.exe /app/
 ADD ./bin/Release/*.dll /app/

@@ -4,7 +4,7 @@
     <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5.2" />
   </startup>
   <appSettings>
-    <add key="BaseUrl" value="http://+:8888"/>
+    <add key="BaseUrl" value="http://localhost:8080"/>
     <add key="SerialNumberSeed" value="${SERIAL_NUMBER_SEED}"/>
   </appSettings>
 </configuration>
