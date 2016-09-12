@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{563EF972-7779-4355-91C5-4E1D9DF813E1}"
 EndProject
@@ -24,6 +24,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Tests", "Tests\Integration\Service.Tests\Service.Tests.csproj", "{524D665A-867C-48A4-9186-05BEE3484830}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resources", "Resources\Resources.csproj", "{4F123ECA-85EF-4345-9655-AAE1D0CC443D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ContinuousIntegration", "ContinuousIntegration", "{0DA507F7-5321-4A17-A332-BCCBED593947}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{EE0A4C28-B288-481F-BFE2-9CC8C868F787}"
+	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
+		Makefile = Makefile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,5 +81,6 @@ Global
 		{8C62D98E-04BF-4A2C-BC64-2CAFD6D8C30A} = {547F1FE9-9196-4176-82CE-BEF7640788CE}
 		{A703A794-1416-4521-B5F2-7C3CD65F5FD5} = {E347D284-CFEA-4564-B6D5-89CA67D693B9}
 		{524D665A-867C-48A4-9186-05BEE3484830} = {A703A794-1416-4521-B5F2-7C3CD65F5FD5}
+		{EE0A4C28-B288-481F-BFE2-9CC8C868F787} = {0DA507F7-5321-4A17-A332-BCCBED593947}
 	EndGlobalSection
 EndGlobal

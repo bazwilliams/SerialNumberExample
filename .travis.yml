@@ -5,12 +5,10 @@ cache:
 sudo: required
 services:
   - docker
-before_install:
-  - make nuget
 before_script:
   - docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD -e $DOCKER_HUB_EMAIL
 script:
-  - make compile test
+  - make
   - make all-the-dockers
   - make docker-push
 after_success:

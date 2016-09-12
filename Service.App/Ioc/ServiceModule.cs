@@ -2,22 +2,22 @@
 {
     using System.Configuration;
 
-    using Ninject.Modules;
+    using Autofac;
 
     using SerialNumber.Domain.Facade;
     using SerialNumber.Domain.Factories;
     using SerialNumber.Resources;
 
-    public class ServiceModule : NinjectModule
+    public class ServiceModule : Module
     {
-        public override void Load()
+        protected override void Load(ContainerBuilder builder)
         {
-            this.Bind<ISerialNumberFactory>()
-                .To<SerialNumberFactory>()
-                .InSingletonScope()
-                .WithConstructorArgument("seed", int.Parse(ConfigurationManager.AppSettings["SerialNumberSeed"]));
+            builder.RegisterInstance(
+                new SerialNumberFactory(int.Parse(ConfigurationManager.AppSettings["SerialNumberSeed"])))
+                .As<ISerialNumberFactory>()
+                .SingleInstance();
 
-            this.Bind<ISerialisedProductFactory<CreateSerialisedProductResource>>().To<SerialisedProductFactory>();
+            builder.RegisterType<SerialisedProductFactory>().As<ISerialisedProductFactory<CreateSerialisedProductResource>>().SingleInstance();
         }
     }
 }
