@@ -58,10 +58,10 @@ $(NUGET):
 	@chmod +x $(NUGET)
 
 nuget-restore: $(NUGET)
-	@$(NUGET) restore $(SOLUTION) -Verbosity quiet
+	@dotnet run $(NUGET) restore $(SOLUTION) -Verbosity quiet
 
 $(NUNIT_RUNNER): $(NUGET)
-	@$(NUGET) install NUnit.Runners -Verbosity quiet -Version 3.4.0 -o packages -source "https://api.nuget.org/v3/index.json"
+	@dotnet run $(NUGET) install NUnit.Runners -Verbosity quiet -Version 3.4.0 -o packages -source "https://api.nuget.org/v3/index.json"
 	@chmod +x $(NUNIT_RUNNER)
 
 configure:
