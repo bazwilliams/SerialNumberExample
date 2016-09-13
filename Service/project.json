@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Domain": "1.0.0-*",
+    "Nancy": "2.0.0-barneyrubble",
+    "NETStandard.Library": "1.6.0",
+    "Resources": "1.0.0-*"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}

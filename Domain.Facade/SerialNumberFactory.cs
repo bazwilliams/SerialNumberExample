@@ -1,8 +1,7 @@
 ﻿namespace SerialNumber.Domain.Facade
 {
-    using System.Collections.Generic;
-
     using SerialNumber.Domain.Factories;
+    using System.Collections.Generic;
 
     public class SerialNumberFactory : ISerialNumberFactory
     {

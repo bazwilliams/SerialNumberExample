@@ -17,10 +17,10 @@
         {
             this.serialNumberFactory = serialNumberFactory;
             this.serialisedProductFactory = serialisedProductFactory;
-            this.Post["/serial-numbers/"] = this.GenerateSerialNumber;
+            this.Post("/serial-numbers/", args => this.GenerateSerialNumber());
         }
 
-        public dynamic GenerateSerialNumber(dynamic parameters)
+        public dynamic GenerateSerialNumber()
         {
             var resource = this.Bind<CreateSerialisedProductResource>();
             var serialisedProduct = this.serialisedProductFactory.Create(resource);

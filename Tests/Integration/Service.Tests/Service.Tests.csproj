@@ -71,24 +71,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Domain.Facade\Domain.Facade.csproj">
-      <Project>{7CCAC3B2-8A6C-4A9C-A864-1F28D35E8E52}</Project>
-      <Name>Domain.Facade</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Domain\Domain.csproj">
-      <Project>{919c3ba6-578a-4990-9804-cde3ea3092bb}</Project>
-      <Name>Domain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Resources\Resources.csproj">
-      <Project>{4F123ECA-85EF-4345-9655-AAE1D0CC443D}</Project>
-      <Name>Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Service\Service.csproj">
-      <Project>{563EF972-7779-4355-91C5-4E1D9DF813E1}</Project>
-      <Name>Service</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

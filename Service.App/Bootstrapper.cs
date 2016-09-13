@@ -5,7 +5,6 @@
     using Nancy;
     using Nancy.Bootstrapper;
     using Nancy.Bootstrappers.Autofac;
-    using Nancy.Json;
 
     using SerialNumber.Service.App.Ioc;
 
@@ -20,8 +19,8 @@
 
         protected override void ConfigureApplicationContainer(ILifetimeScope existingContainer)
         {
-            JsonSettings.MaxJsonLength = int.MaxValue;
-            JsonSettings.RetainCasing = true;
+//            JsonSettings.MaxJsonLength = int.MaxValue;
+//            JsonSettings.RetainCasing = true;
 
             base.ConfigureApplicationContainer(existingContainer);
 
