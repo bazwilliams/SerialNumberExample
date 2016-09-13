@@ -52,7 +52,8 @@ mostlyclean:
 
 build: mostlyclean
 	dotnet restore -s https://www.myget.org/F/nancyfx/api/v2/ -s https://www.nuget.org/api/v2/
-	dotnet build Service.App/
+	dotnet build Service.App/ --configuration Release
+	dotnet publish Service.App/ --configuration Release
 	
 $(DOCKER_NAME):
 	$(call label_dockerfile, Service.App/Dockerfile)
