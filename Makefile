@@ -51,7 +51,7 @@ mostlyclean:
 	-@find -type d -name obj -exec rm -vrf {} \;
 
 build: mostlyclean
-	dotnet restore
+	dotnet restore -s https://www.myget.org/F/nancyfx/api/v2/ -s https://www.nuget.org/api/v2/
 	dotnet build Service.App/
 	
 $(DOCKER_NAME):
