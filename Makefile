@@ -37,7 +37,7 @@ define label_dockerfile
 	fi
 endef
 
-all: | xbuild
+all: | build
 
 clean: mostlyclean
 	-@rm -fv $(NUGET)
@@ -50,8 +50,8 @@ mostlyclean:
 	-@find -type d -name bin -exec rm -vrf {} \;
 	-@find -type d -name obj -exec rm -vrf {} \;
 
-xbuild: mostlyclean 
-	@xbuild /verbosity:minimal /p:TargetFrameworkVersion="v4.5" /p:Configuration=Release $(SOLUTION)
+build: mostlyclean 
+	dotnet build Service.App
 	
 $(DOCKER_NAME):
 	$(call label_dockerfile, Service.App/Dockerfile)
