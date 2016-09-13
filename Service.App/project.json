@@ -1,5 +1,13 @@
 ﻿{
   "version": "1.0.0-*",
+
+  "configProperties": {
+    "System.GC.Server": true,
+    "System.GC.Concurrent": true,
+    "System.Threading.ThreadPool.MinThreads": 1000,
+    "System.Threading.ThreadPool.MaxThreads": 2000
+  },
+
   "buildOptions": {
     "emitEntryPoint": true
   },
