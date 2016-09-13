@@ -50,8 +50,9 @@ mostlyclean:
 	-@find -type d -name bin -exec rm -vrf {} \;
 	-@find -type d -name obj -exec rm -vrf {} \;
 
-build: mostlyclean 
-	dotnet build Service.App
+build: mostlyclean
+	dotnet restore
+	dotnet build Service.App/
 	
 $(DOCKER_NAME):
 	$(call label_dockerfile, Service.App/Dockerfile)
