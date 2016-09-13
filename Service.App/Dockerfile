@@ -1,6 +1,6 @@
 FROM microsoft/dotnet:latest
 
-COPY bin/Debug/netcoreapp1.0/publish/ /app/
+COPY bin/Release/netcoreapp1.0/publish/ /app/
 
 EXPOSE 8888/tcp
 
