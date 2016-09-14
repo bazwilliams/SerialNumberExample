@@ -11,8 +11,8 @@ before_script:
   - docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD -e $DOCKER_HUB_EMAIL
 script:
   - make
+  - make test
   - make all-the-dockers
-  - make docker-push
 after_success:
   - make docker-tag
   - make docker-push
