@@ -21,7 +21,7 @@
         [SetUp]
         public async Task EstablishContext()
         {
-            var resource = new CreateSerialisedProductResource { productName = ProductName };
+            var resource = new CreateSerialisedProductResource { ProductName = ProductName };
             this.response = await this.Browser.Post(
                 "/serial-numbers",
                 with =>
@@ -41,8 +41,8 @@
         public void ShouldReturnCorrectResource()
         {
             var resource = this.response.Body.DeserializeJson<SerialisedProductResource>();
-            resource.productName.Should().Be(ProductName);
-            resource.serialNumber.Should().ContainInOrder(this.ExpectedSerialNumber);
+            resource.ProductName.Should().Be(ProductName);
+            resource.SerialNumber.Should().ContainInOrder(this.ExpectedSerialNumber);
         }
     }
 }

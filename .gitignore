@@ -15,4 +15,4 @@ nuget.exe
 coverage.json
 TestResults/
 App.config
-project.json.lock
+project.lock.json
