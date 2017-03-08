@@ -2,6 +2,8 @@
 {
     using System.Collections.Generic;
 
+    using System.Threading;
+
     using FluentAssertions;
 
     using NUnit.Framework;
@@ -14,7 +16,7 @@
         [SetUp]
         public void EstablishContext()
         {
-            this.result = this.Sut.Create(1);
+            this.result = this.Sut.Create(1, CancellationToken.None).Result;
         }
 
         [Test]
