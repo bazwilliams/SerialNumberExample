@@ -7,6 +7,9 @@
     using SerialNumber.Resources;
     using SerialNumber.Service.Extensions;
 
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public class SerialNumberModule : NancyModule
     {
         private readonly ISerialNumberFactory serialNumberFactory;
@@ -17,17 +20,17 @@
         {
             this.serialNumberFactory = serialNumberFactory;
             this.serialisedProductFactory = serialisedProductFactory;
-            this.Post("/serial-numbers/", args => this.GenerateSerialNumber());
+            this.Post("/serial-numbers/", async (args, ct) => await this.GenerateSerialNumber(ct));
         }
 
-        public dynamic GenerateSerialNumber()
+        public async Task<dynamic> GenerateSerialNumber(CancellationToken ct)
         {
             var resource = this.Bind<CreateSerialisedProductResource>();
             var serialisedProduct = this.serialisedProductFactory.Create(resource);
 
-            serialisedProduct.GenerateSerialNumber(this.serialNumberFactory);
+            await serialisedProduct.GenerateSerialNumber(this.serialNumberFactory, ct);
 
-            return this.Negotiate
+            return await this.Negotiate
                 .WithStatusCode(HttpStatusCode.Created)
                 .WithModel(serialisedProduct.ToResource());
         }

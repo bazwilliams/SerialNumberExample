@@ -1,7 +1,11 @@
 ﻿namespace SerialNumber.Domain.Facade
 {
     using SerialNumber.Domain.Factories;
+
     using System.Collections.Generic;
+
+    using System.Threading;
+    using System.Threading.Tasks;    
 
     public class SerialNumberFactory : ISerialNumberFactory
     {
@@ -12,7 +16,7 @@
             this.nextVal = seed;
         }
 
-        public IEnumerable<int> Create(int numberRequired)
+        public async Task<IEnumerable<int>> Create(int numberRequired, CancellationToken ct)
         {
             var serialNumbers = new List<int>();
             for (var i = 0; i < numberRequired; i++)
@@ -20,7 +24,7 @@
                 serialNumbers.Add(this.nextVal++);
             }
 
-            return serialNumbers;
+            return await Task.FromResult(serialNumbers);
         }
     }
 }

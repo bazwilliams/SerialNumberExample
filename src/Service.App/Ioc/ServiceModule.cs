@@ -4,12 +4,17 @@
 
     using Autofac;
 
+    using Amazon.DynamoDBv2;
+
     using Microsoft.Extensions.Configuration;
 
     using SerialNumber.Domain.Facade;
+    
     using SerialNumber.Domain.Factories;
 
     using SerialNumber.Resources;
+
+    using SerialNumber.Persistence.Tables;
 
     public class ServiceModule : Module
     {
@@ -20,12 +25,15 @@
             configurationBuilder.AddEnvironmentVariables();
             var connectionStringConfig = configurationBuilder.Build();
 
-            builder.RegisterInstance(
-                new SerialNumberFactory(int.Parse(connectionStringConfig["serialNumberSeed"])))
+            var client = new AmazonDynamoDBClient();
+ 
+            builder.Register(ctx => new SerialNumberSequenceTable(client, ctx.Resolve<IConfiguration>()["deviceDetailsDb"]))
                 .As<ISerialNumberFactory>()
                 .SingleInstance();
 
-            builder.RegisterType<SerialisedProductFactory>().As<ISerialisedProductFactory<CreateSerialisedProductResource>>().SingleInstance();
+            builder.RegisterType<SerialisedProductFactory>()
+                .As<ISerialisedProductFactory<CreateSerialisedProductResource>>()
+                .SingleInstance();
         }
     }
 }
