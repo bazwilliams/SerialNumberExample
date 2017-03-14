@@ -3,22 +3,20 @@
     using Amazon.DynamoDBv2;
     using Amazon.DynamoDBv2.Model;
 
-    using SerialNumber.Domain;
     using SerialNumber.Domain.Factories;
 
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class SerialNumberSequenceTable : ISerialNumberFactory
+    public class SequencesTable : ISerialNumberFactory
     {
         private readonly IAmazonDynamoDB client;
 
         private readonly string tableName;
 
-        public SerialNumberSequenceTable(IAmazonDynamoDB client, string tableName)
+        public SequencesTable(IAmazonDynamoDB client, string tableName)
         {
             this.client = client;
             this.tableName = tableName;
@@ -34,7 +32,7 @@
 
             var response = await this.client.GetItemAsync(getRequest, ct);
 
-            var nextValue = int.Parse(response.Item["NextValue"].N);
+            var nextValue = response.Item != null ? int.Parse(response.Item["NextValue"].N) : 0;
             var newNextValue = nextValue + numberRequired;
 
             var putRequest = new PutItemRequest()

@@ -1,5 +1,4 @@
-DOCKER_NAME := bazwilliams/serial-number-service
-SOLUTION := SerialNumberExample.sln
+DOCKER_NAME := bazwilliams/serial-number-example
 BUILD_DATE :=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
 VCS_REF :=`git rev-parse --short HEAD`
 

@@ -27,7 +27,7 @@
 
             var client = new AmazonDynamoDBClient();
  
-            builder.Register(ctx => new SerialNumberSequenceTable(client, ctx.Resolve<IConfiguration>()["deviceDetailsDb"]))
+            builder.Register(ctx => new SequencesTable(client, ctx.Resolve<IConfiguration>()["sequencesTableName"]))
                 .As<ISerialNumberFactory>()
                 .SingleInstance();
 

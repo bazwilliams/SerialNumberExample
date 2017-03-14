@@ -1,0 +1,28 @@
+Description: "SerialNumberExample: Sequences Persistence"
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  sequencesTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: Sequence
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Sequence
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+Outputs:
+  sequencesTableName:
+    Description: "DynamoDb table name where sequences are kept"
+    Value: !Ref sequencesTable
+    Export:
+      Name: serialnumberexample-persistence-sequences-table-name
+  sequencesTableArn:
+    Description: "DynamoDb table arn where sequences are kept"
+    Value: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${sequencesTable}"
+    Export:
+      Name: serialnumberexample-persistence-sequences-table-arn
