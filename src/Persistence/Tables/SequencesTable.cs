@@ -32,7 +32,7 @@
 
             var response = await this.client.GetItemAsync(getRequest, ct);
 
-            var nextValue = response.Item != null ? int.Parse(response.Item["NextValue"].N) : 0;
+            var nextValue = response.IsItemSet ? int.Parse(response.Item["NextValue"].N) : 0;
             var newNextValue = nextValue + numberRequired;
 
             var putRequest = new PutItemRequest()
@@ -42,7 +42,10 @@
                     {
                         { "Sequence", new AttributeValue { S = "SerialNumber" } },
                         { "NextValue", new AttributeValue { N = newNextValue.ToString() } }
-                    }
+                    },
+                ExpressionAttributeNames = { ["#DbNextValue"] = "NextValue" },
+                ExpressionAttributeValues = { [":OriginalNextValue"] = new AttributeValue() { N = nextValue.ToString() } },
+                ConditionExpression = "attribute_not_exists (#DbNextValue) OR :OriginalNextValue = #DbNextValue"
             };
 
             await this.client.PutItemAsync(putRequest, ct);

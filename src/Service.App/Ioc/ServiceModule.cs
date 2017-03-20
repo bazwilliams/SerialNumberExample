@@ -24,7 +24,9 @@
             configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>() { new KeyValuePair<string, string>("serialNumberSeed", "42") });
             configurationBuilder.AddEnvironmentVariables();
 
-            builder.RegisterInstance(configurationBuilder.Build()).As<IConfiguration>().SingleInstance();
+            builder.RegisterInstance(configurationBuilder.Build())
+                .As<IConfiguration>()
+                .SingleInstance();
 
             var client = new AmazonDynamoDBClient();
  
