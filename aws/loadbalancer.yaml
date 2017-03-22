@@ -1,0 +1,87 @@
+Description: "Application load balancer for apps"
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  albSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow port 80 to ecs host
+      VpcId: vpc-20bc4c49
+      SecurityGroupIngress:
+        - IpProtocol: 'tcp'
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: 'tcp'
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+
+  loadBalancer:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      Name: "api"
+      Scheme: "internet-facing"
+      Subnets:
+        - subnet-a228cdd9
+        - subnet-0bf5cb41
+      SecurityGroups:
+        - !Ref albSecurityGroup
+      Tags:
+        - Key: "cit"
+          Value: "IT"
+
+  httpListener:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      Port: 80
+      Protocol: "HTTP"
+      LoadBalancerArn: !Ref loadBalancer
+      DefaultActions:
+        - Type: "forward"
+          TargetGroupArn: !Ref defaultTargetGroup
+
+  defaultTargetGroup:
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    Properties:
+      Name: "default-api"
+      HealthCheckPath : "/lb?stats"
+      HealthCheckPort : 8080
+      Port: 80
+      Protocol: "HTTP"
+      Tags:
+        - Key: "cit"
+          Value: "IT"
+      VpcId: vpc-20bc4c49
+
+  serialNumberExampleTargetGroup:
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    Properties:
+      Name: "serial-number-example-api"
+      HealthCheckPath : "/healthcheck"
+      Port: 80
+      Protocol: "HTTP"
+      Tags:
+        - Key: "cit"
+          Value: "IT"
+      VpcId: vpc-20bc4c49
+
+  serialNumberExampleListenerRule:
+    Type: "AWS::ElasticLoadBalancingV2::ListenerRule"
+    Properties:
+      Actions:
+        - Type: "forward"
+          TargetGroupArn: !Ref serialNumberExampleTargetGroup
+      Conditions:
+        - Field: "path-pattern"
+          Values:
+            - "/serial-numbers"
+      ListenerArn: !Ref httpListener
+      Priority: 1
+
+Outputs:
+  serialNumberExampleTargetGroupArn:
+    Description: "Serial Number Example Target Group"
+    Value: !Ref serialNumberExampleTargetGroup
+    Export:
+      Name: serialnumberexample-targetgroup-arn
