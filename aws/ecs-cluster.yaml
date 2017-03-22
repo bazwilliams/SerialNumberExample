@@ -10,24 +10,6 @@ Parameters:
     Description: "The name of our ECS cluster"
 
 Resources:
-  scalingGroup:
-    Type: "AWS::AutoScaling::AutoScalingGroup"
-    Properties:
-      DesiredCapacity: 0
-      MinSize: 0
-      MaxSize: 1
-      LaunchConfigurationName: !Ref launchConfiguration
-      Tags:
-        - Key: "cit"
-          Value: "it"
-          PropagateAtLaunch: True
-        - Key: "Name"
-          Value: "serial-number-example-demo"
-          PropagateAtLaunch: True
-      VPCZoneIdentifier:
-        - subnet-a228cdd9
-        - subnet-0bf5cb41
-
   ecsInstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -102,6 +84,24 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash
           echo ECS_CLUSTER=${clusterName} > /etc/ecs/ecs.config
+
+  scalingGroup:
+    Type: "AWS::AutoScaling::AutoScalingGroup"
+    Properties:
+      DesiredCapacity: 0
+      MinSize: 0
+      MaxSize: 1
+      LaunchConfigurationName: !Ref launchConfiguration
+      Tags:
+        - Key: "cit"
+          Value: "it"
+          PropagateAtLaunch: True
+        - Key: "Name"
+          Value: "serial-number-example-demo"
+          PropagateAtLaunch: True
+      VPCZoneIdentifier:
+        - subnet-a228cdd9
+        - subnet-0bf5cb41
 
   ecsCluster:
     Type: "AWS::ECS::Cluster"

@@ -1,3 +1,5 @@
+> Set AWS_REGION environment variable along with AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+
 aws cloudformation deploy --stack-name=serial-number-example-persistence --template-file=persistence.yaml
 
 aws cloudformation describe-stacks --stack-name=serial-number-example-persistence
