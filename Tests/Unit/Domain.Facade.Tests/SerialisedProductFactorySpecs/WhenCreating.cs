@@ -17,14 +17,14 @@
         [SetUp]
         public void EstablishContext()
         {
-            this.resource = new CreateSerialisedProductResource { productName = "Test" };
+            this.resource = new CreateSerialisedProductResource { ProductName = "Test" };
             this.result = this.Sut.Create(this.resource);
         }
 
         [Test]
         public void ShouldSetProductName()
         {
-            this.result.ProductName.Should().Be(this.resource.productName);
+            this.result.ProductName.Should().Be(this.resource.ProductName);
         }
 
         [Test]

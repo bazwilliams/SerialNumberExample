@@ -1,7 +1,4 @@
-DOCKER_NAME := bazwilliams/serial-number-service
-SOLUTION := SerialNumberExample.sln
-NUGET := ./packages/nuget.exe
-NUNIT_RUNNER :=	./packages/NUnit.ConsoleRunner.3.4.0/tools/nunit3-console.exe
+DOCKER_NAME := bazwilliams/serial-number-example
 BUILD_DATE :=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
 VCS_REF :=`git rev-parse --short HEAD`
 
@@ -19,65 +16,31 @@ define tag_docker
 	fi
 endef
 
-define label_dockerfile
-	@echo "LABEL org.label-schema.vendor=\"Barry John Williams\" \\" >> $(1)
-	@echo "      org.label-schema.build-date=\"$(BUILD_DATE)\" \\" >> $(1)
-	@echo "      org.label-schema.docker.dockerfile=\"/Dockerfile\" \\" >> $(1)
-	@echo "      org.label-schema.license=\"MIT\" \\" >> $(1)
-	@echo "      org.label-schema.name=\"Serial Number Example\" \\" >> $(1)
-	@echo "      org.label-schema.version=\"$(TRAVIS_BUILD_NUMBER)\" \\" >> $(1)
-	@echo "      org.label-schema.url=\"https://blog.bjw.me.uk/\" \\" >> $(1)
-	@echo "      org.label-schema.vcs-ref=\"$(VCS_REF)\" \\" >> $(1)
-	@echo "      org.label-schema.vcs-type=\"Git\" \\" >> $(1)
-	@echo "      org.label-schema.vcs-url=\"https://github.com/bazwilliams/SerialNumberExample\" \\" >> $(1)
-	@echo "      uk.me.bjw.build-number=\"$(TRAVIS_BUILD_NUMBER)\" \\" >> $(1)
-	@echo "      uk.me.bjw.branch=\"$(TRAVIS_BRANCH)\" \\" >> $(1)
-	@if [ "$(TRAVIS_BRANCH)" = "master" -a "$(TRAVIS_PULL_REQUEST)" = "false" ]; then \
-		echo "      uk.me.bjw.is-production=\"true\"" >> $(1); \
-	else \
-		echo "      uk.me.bjw.is-production=\"false\"" >> $(1); \
-	fi
-endef
-
-all: | xbuild
+all: | build
 
 clean: mostlyclean
-	-@rm -fv $(NUGET)
-	-@rm -fv $(NUNIT_RUNNER)
 	-@rm -rfv packages
 	-@rm -rfv tools
+	-@find -type d -name project.lock.json -exec rm {} \;
 
 mostlyclean:
-	-@find -type f -name App.config -exec rm -vf {} \;
 	-@find -type d -name bin -exec rm -vrf {} \;
 	-@find -type d -name obj -exec rm -vrf {} \;
 
-$(NUGET):
-	@mkdir -p ./packages
-	@wget -O $(NUGET) https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-	@chmod +x $(NUGET)
+test:
+	@find ./Tests/ -type f -name project.json -print0 | xargs -0 -n 1 dotnet test
 
-nuget-restore: $(NUGET)
-	@mono $(NUGET) restore $(SOLUTION) -Verbosity quiet
+build: mostlyclean
+	dotnet restore -s https://www.myget.org/F/nancyfx/api/v2/ -s https://www.nuget.org/api/v2/
+	dotnet build src/Service.App/ --configuration Release
+	dotnet publish src/Service.App/ --configuration Release
 
-$(NUNIT_RUNNER): $(NUGET)
-	@mono $(NUGET) install NUnit.Runners -Verbosity quiet -Version 3.4.0 -o packages -source "https://api.nuget.org/v3/index.json"
-	@chmod +x $(NUNIT_RUNNER)
-
-configure:
-	@cp -nv Service.App/App.config.template Service.App/App.config
-	
-xbuild: mostlyclean nuget-restore configure
-	@xbuild /verbosity:minimal /p:TargetFrameworkVersion="v4.5" /p:Configuration=Release $(SOLUTION)
-	
-test: $(NUNIT_RUNNER)
-	@$(RUNTIME) $(NUNIT_RUNNER) -workers 1 `(find Tests -name *Tests.dll | grep -v obj/Release)`
-
-$(DOCKER_NAME):
-	$(call label_dockerfile, Service.App/Dockerfile)
-	docker build -q -t $(DOCKER_NAME):$(TRAVIS_BUILD_NUMBER) Service.App
-
-all-the-dockers: $(DOCKER_NAME)
+all-the-dockers:
+	docker build -t $(DOCKER_NAME):$(TRAVIS_BUILD_NUMBER) \
+		--build-arg VCS_REF=$(VCS_REF) \
+		--build-arg VERSION=$(TRAVIS_BUILD_NUMBER) \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
+	src/Service.App
 
 docker-tag:
 	$(call tag_docker, $(DOCKER_NAME))

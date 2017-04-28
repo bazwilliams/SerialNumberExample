@@ -6,6 +6,8 @@
 
     using NUnit.Framework;
 
+    using System.Threading;
+
     [TestFixture]
     public class WhenSerialising : ContextBase
     {
@@ -14,8 +16,8 @@
         [SetUp]
         public void EstablishContext()
         {
-            this.SerialNumberFactory.Create(1).Returns(new[] { ExpectedSerialNumber });
-            this.Sut.GenerateSerialNumber(this.SerialNumberFactory);
+            this.SerialNumberFactory.Create(1, Arg.Any<CancellationToken>()).Returns(new[] { ExpectedSerialNumber });
+            this.Sut.GenerateSerialNumber(this.SerialNumberFactory, CancellationToken.None);
         }
 
         [Test]

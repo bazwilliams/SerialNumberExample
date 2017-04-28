@@ -1,0 +1,59 @@
+Description: "Serial Number Example Application"
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  targetCluster:
+    Type: String
+    Description: "ECS Cluster name to be deployed on"
+  dockerTag:
+    Type: String
+    Description: "Docker tag to deploy"
+
+Resources:
+  taskDefinitionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: [ "ecs-tasks.amazonaws.com" ]
+            Action: [ "sts:AssumeRole" ]
+      Path: "/"
+      Policies:
+          - PolicyName: "readandwritedynamodbsequences"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "dynamodb:GetItem"
+                    - "dynamodb:PutItem"
+                  Resource: !ImportValue serialnumberexample-persistence-sequences-table-arn
+
+  taskDefinition:
+    Type: "AWS::ECS::TaskDefinition"
+    Properties:
+      TaskRoleArn: !GetAtt taskDefinitionRole.Arn
+      ContainerDefinitions:
+        - Name: serial-number-example
+          Cpu: "1"
+          Essential: true
+          Image: !Sub docker.io/bazwilliams/serial-number-example:${dockerTag}
+          PortMappings:
+            - HostPort: 8080
+              ContainerPort: 8080
+          Environment:
+            - Name: AWS_REGION
+              Value: !Ref AWS::Region
+            - Name: sequencesTableName
+              Value: !ImportValue serialnumberexample-persistence-sequences-table-name
+          Memory: "150"
+
+  service:
+    Type: "AWS::ECS::Service"
+    Properties:
+      Cluster: !Ref targetCluster
+      DesiredCount: 1
+      TaskDefinition: !Ref taskDefinition

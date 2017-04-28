@@ -1,0 +1,109 @@
+Description: "ECS Cluster"
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  keyName:
+    Type: String
+    Description: "Key name to provide to EC2 instances"
+  clusterName:
+    Type: String
+    Description: "The name of our ECS cluster"
+
+Resources:
+  ecsInstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow everything to ecs host
+      VpcId: vpc-20bc4c49
+      SecurityGroupIngress:
+        - IpProtocol: '-1'
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: '-1'
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+
+  ecsRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+
+  ecsRolePolicies:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: "ecsInstancePolicy"
+      PolicyDocument:
+        Statement:
+          Effect: "Allow"
+          Action:
+            - "ecs:DeregisterContainerInstance"
+            - "ecs:DiscoverPollEndpoint"
+            - "ecs:Poll"
+            - "ecs:RegisterContainerInstance"
+            - "ecs:StartTelemetrySession"
+            - "ecs:Submit*"
+            - "ecr:GetAuthorizationToken"
+            - "ecr:BatchCheckLayerAvailability"
+            - "ecr:GetDownloadUrlForLayer"
+            - "ecr:BatchGetImage"
+            - "logs:CreateLogStream"
+            - "logs:PutLogEvents"
+          Resource: "*"
+      Roles:
+        - !Ref ecsRole
+
+  ecsInstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref ecsRole
+
+  launchConfiguration:
+    Type: "AWS::AutoScaling::LaunchConfiguration"
+    Properties:
+      IamInstanceProfile: !Ref ecsInstanceProfile
+      ImageId: ami-3fb6bc5b
+      InstanceMonitoring: False
+      InstanceType: t2.nano
+      KeyName: !Ref keyName
+      SecurityGroups:
+        - !Ref ecsInstanceSecurityGroup
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          echo ECS_CLUSTER=${clusterName} > /etc/ecs/ecs.config
+
+  scalingGroup:
+    Type: "AWS::AutoScaling::AutoScalingGroup"
+    Properties:
+      DesiredCapacity: 0
+      MinSize: 0
+      MaxSize: 1
+      LaunchConfigurationName: !Ref launchConfiguration
+      Tags:
+        - Key: "cit"
+          Value: "it"
+          PropagateAtLaunch: True
+        - Key: "Name"
+          Value: "serial-number-example-demo"
+          PropagateAtLaunch: True
+      VPCZoneIdentifier:
+        - subnet-a228cdd9
+        - subnet-0bf5cb41
+
+  ecsCluster:
+    Type: "AWS::ECS::Cluster"
+    Properties:
+      ClusterName: !Ref clusterName

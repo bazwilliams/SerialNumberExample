@@ -1,0 +1,97 @@
+Description: "Serial Number Example Application"
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  targetCluster:
+    Type: String
+    Description: "ECS Cluster name to be deployed on"
+  dockerTag:
+    Type: String
+    Description: "Docker tag to deploy"
+
+Resources:
+  ecsServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "ecs.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      
+  ecsServiceRolePolicies:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: "ecsServicePolicy"
+      PolicyDocument:
+        Statement:
+          Effect: "Allow"
+          Action:
+            - "ec2:AuthorizeSecurityGroupIngress"
+            - "ec2:Describe*"
+            - "elasticloadbalancing:DeregisterInstancesFromLoadBalancer"
+            - "elasticloadbalancing:DeregisterTargets"
+            - "elasticloadbalancing:Describe*"
+            - "elasticloadbalancing:RegisterInstancesWithLoadBalancer"
+            - "elasticloadbalancing:RegisterTargets"
+          Resource: "*"
+      Roles:
+        - !Ref ecsServiceRole
+
+  taskDefinitionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: 
+                - "ecs-tasks.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+          - PolicyName: "readandwritedynamodbsequences"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "dynamodb:GetItem"
+                    - "dynamodb:PutItem"
+                  Resource: !ImportValue serialnumberexample-persistence-sequences-table-arn
+
+  taskDefinition:
+    Type: "AWS::ECS::TaskDefinition"
+    Properties:
+      TaskRoleArn: !GetAtt taskDefinitionRole.Arn
+      ContainerDefinitions:
+        - Name: serial-number-example
+          Cpu: "1"
+          Essential: true
+          Image: !Sub docker.io/bazwilliams/serial-number-example:${dockerTag}
+          PortMappings:
+            - ContainerPort: 8080
+          Environment:
+            - Name: AWS_REGION
+              Value: !Ref AWS::Region
+            - Name: sequencesTableName
+              Value: !ImportValue serialnumberexample-persistence-sequences-table-name
+          Memory: "150"
+
+  service:
+    Type: "AWS::ECS::Service"
+    Properties:
+      Cluster: !Ref targetCluster
+      DesiredCount: 1
+      TaskDefinition: !Ref taskDefinition
+      Role: !Ref ecsServiceRole
+      LoadBalancers:
+        - ContainerName: serial-number-example
+          ContainerPort: 8080
+          TargetGroupArn: !ImportValue serialnumberexample-targetgroup-arn
