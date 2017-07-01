@@ -1,5 +1,6 @@
 language: csharp
 mono: none
+sudo: required
 dotnet: 1.0.0
 cache:
   directories:
