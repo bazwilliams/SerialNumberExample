@@ -1,6 +1,7 @@
 language: csharp
 mono: none
 sudo: required
+dist: trusty
 dotnet: 1.0.0
 cache:
   directories:
