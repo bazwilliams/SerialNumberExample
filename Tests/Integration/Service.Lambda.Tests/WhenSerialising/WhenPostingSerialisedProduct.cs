@@ -1,20 +1,20 @@
-﻿namespace SerialNumber.Service.Tests.WhenSerialising
+﻿namespace SerialNumber.Service.Lambda.Tests.WhenSerialising
 {
     using FluentAssertions;
 
-    using Nancy;
-    using Nancy.Testing;
-
+    using System.IO;
     using System.Threading.Tasks;
 
     using NUnit.Framework;
 
     using SerialNumber.Resources;
 
+    using SerialNumber.Service.Lambda;
+
     [TestFixture]
     public class WhenPostingSerialisedProduct : ContextBase
     {
-        private BrowserResponse response;
+        private Stream response;
 
         private static string ProductName => "Sondek LP12";
 
@@ -22,25 +22,16 @@
         public async Task EstablishContext()
         {
             var resource = new CreateSerialisedProductResource { ProductName = ProductName };
-            this.response = await this.Browser.Post(
-                "/serial-numbers",
-                with =>
-                    {
-                        with.Accept("application/json");
-                        with.JsonBody(resource);
-                    });
-        }
 
-        [Test]
-        public void ShouldReceiveCreated()
-        {
-            this.response.StatusCode.Should().Be(HttpStatusCode.Created);
+            var inputStream = Utils.ToJsonMemoryStream(resource);
+
+            this.response = await this.Handlers.SerialisedProductHandler(inputStream, this.LambdaContext);
         }
 
         [Test]
         public void ShouldReturnCorrectResource()
         {
-            var resource = this.response.Body.DeserializeJson<SerialisedProductResource>();
+            var resource = Utils.Bind<SerialisedProductResource>(this.response);
             resource.ProductName.Should().Be(ProductName);
             resource.SerialNumber.Should().ContainInOrder(this.ExpectedSerialNumber);
         }

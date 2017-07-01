@@ -18,5 +18,4 @@ test:
 
 build: mostlyclean
 	dotnet restore -s https://www.myget.org/F/nancyfx/api/v2/ -s https://www.nuget.org/api/v2/
-	dotnet build src/Service.Lambda/ --configuration Release
-	dotnet publish src/Service.Lambda/ --configuration Release
+	dotnet publish src/Service.Lambda.Console/ --configuration Release

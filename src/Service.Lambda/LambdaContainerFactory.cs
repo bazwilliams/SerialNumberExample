@@ -6,13 +6,19 @@ namespace SerialNumber.Service.Lambda.Ioc
 
     using SerialNumber.Service.Ioc;
 
-    internal static class ContainerFactory
+    public class LambdaContainerFactory : IContainerFactory
     {
-        public static IContainer Create(ILambdaLogger lambdaLog)
+        private readonly ILambdaLogger lambdaLog;
+
+        public LambdaContainerFactory(ILambdaLogger lambdaLog)
+        {
+            this.lambdaLog = lambdaLog;
+        }
+
+        public IContainer Create()
         {
             var builder = new ContainerBuilder();
             builder.RegisterModule<ServiceModule>();
-
             return builder.Build();
         }
     }

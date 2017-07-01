@@ -6,6 +6,7 @@ namespace SerialNumber.Service.Lambda
     using System.Threading.Tasks;
 
     using SerialNumber.Service.Extensions;
+    using SerialNumber.Service.Ioc;
     using SerialNumber.Service.Lambda.Ioc;
     using SerialNumber.Resources;
     using SerialNumber.Domain.Factories;
@@ -16,13 +17,31 @@ namespace SerialNumber.Service.Lambda
 
     public class Handlers
     {
+        private IContainer container;
+
+        public Handlers()
+        {
+        }
+
+        public Handlers(IContainer container)
+        {
+            this.container = container;
+        }
+
+        private IContainer GetContainer(ILambdaContext context) {
+            if (this.container == null) {
+                this.container = new LambdaContainerFactory(context.Logger).Create();
+            }
+
+            return this.container;
+        }
+
         public async Task<Stream> SerialisedProductHandler(Stream inputStream, ILambdaContext context)
         {
             context.Logger.Log("Loading");
 
-            using (var scope = ContainerFactory.Create(context.Logger).BeginLifetimeScope())
+            using (var scope = this.GetContainer(context).BeginLifetimeScope())
             {
-
                 var serialisedProductFactory = scope.Resolve<ISerialisedProductFactory<CreateSerialisedProductResource>>();
                 
                 var serialNumberFactory = scope.Resolve<ISerialNumberFactory>();
