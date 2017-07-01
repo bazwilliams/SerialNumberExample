@@ -1,4 +1,4 @@
-﻿namespace SerialNumber.Service.App.Ioc
+﻿namespace SerialNumber.Service.Ioc
 {
     using System.Collections.Generic;
 
@@ -7,6 +7,7 @@
     using Amazon.DynamoDBv2;
 
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
     using SerialNumber.Domain.Facade;
     
