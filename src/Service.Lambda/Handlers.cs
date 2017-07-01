@@ -28,17 +28,9 @@ namespace SerialNumber.Service.Lambda
             this.container = container;
         }
 
-        private IContainer GetContainer(ILambdaContext context) {
-            if (this.container == null) {
-                this.container = new LambdaContainerFactory(context.Logger).Create();
-            }
-
-            return this.container;
-        }
-
         public async Task<Stream> SerialisedProductHandler(Stream inputStream, ILambdaContext context)
         {
-            context.Logger.Log("Loading");
+            context.Logger.LogLine("Loading");
 
             using (var scope = this.GetContainer(context).BeginLifetimeScope())
             {
@@ -46,7 +38,7 @@ namespace SerialNumber.Service.Lambda
                 
                 var serialNumberFactory = scope.Resolve<ISerialNumberFactory>();
                 
-                context.Logger.Log("Loaded");
+                context.Logger.LogLine("Loaded");
 
                 try
                 {
@@ -58,16 +50,24 @@ namespace SerialNumber.Service.Lambda
 
                     var response = Utils.ToJsonMemoryStream(serialisedProduct.ToResource());
 
-                    context.Logger.Log("Success");
+                    context.Logger.LogLine("Success");
 
                     return response;
                 }
                 catch (Exception e)
                 {
-                    context.Logger.Log(e.Message);
+                    context.Logger.LogLine(e.Message);
                     throw;
                 }
             }
+        }
+
+        private IContainer GetContainer(ILambdaContext context) {
+            if (this.container == null) {
+                this.container = LambdaContainerFactory.Create(context.Logger);
+            }
+
+            return this.container;
         }
     }
 }

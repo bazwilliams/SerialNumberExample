@@ -17,5 +17,5 @@ test:
 	@find ./Tests/ -type f -name project.json -print0 | xargs -0 -n 1 dotnet test
 
 build: mostlyclean
-	dotnet restore -s https://www.myget.org/F/nancyfx/api/v2/ -s https://www.nuget.org/api/v2/
+	dotnet restore
 	dotnet publish src/Service.Lambda.Console/ --configuration Release

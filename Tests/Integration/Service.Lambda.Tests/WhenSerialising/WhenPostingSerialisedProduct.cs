@@ -5,6 +5,8 @@
     using System.IO;
     using System.Threading.Tasks;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     using SerialNumber.Resources;
@@ -34,6 +36,12 @@
             var resource = Utils.Bind<SerialisedProductResource>(this.response);
             resource.ProductName.Should().Be(ProductName);
             resource.SerialNumber.Should().ContainInOrder(this.ExpectedSerialNumber);
+        }
+
+        [Test]
+        public void ShouldLogSuccess()
+        {
+            this.LambdaLogger.Received().LogLine("Success");
         }
     }
 }

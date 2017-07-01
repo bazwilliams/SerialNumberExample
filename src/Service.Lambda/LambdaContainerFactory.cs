@@ -6,16 +6,9 @@ namespace SerialNumber.Service.Lambda.Ioc
 
     using SerialNumber.Service.Ioc;
 
-    public class LambdaContainerFactory : IContainerFactory
+    public static class LambdaContainerFactory
     {
-        private readonly ILambdaLogger lambdaLog;
-
-        public LambdaContainerFactory(ILambdaLogger lambdaLog)
-        {
-            this.lambdaLog = lambdaLog;
-        }
-
-        public IContainer Create()
+        public static IContainer Create(ILambdaLogger lambdaLogger)
         {
             var builder = new ContainerBuilder();
             builder.RegisterModule<ServiceModule>();

@@ -25,6 +25,8 @@
 
         protected ILambdaContext LambdaContext { get; private set; }
 
+        protected ILambdaLogger LambdaLogger { get; private set; }
+
         [SetUp]
         public void CommonContext()
         {
@@ -42,6 +44,10 @@
                 .SingleInstance();
 
             this.LambdaContext = Substitute.For<ILambdaContext>();
+            
+            this.LambdaLogger = Substitute.For<ILambdaLogger>();
+            
+            this.LambdaContext.Logger.Returns(this.LambdaLogger);
 
             this.Handlers = new Handlers(builder.Build());
         }
