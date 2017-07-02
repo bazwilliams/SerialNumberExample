@@ -1,8 +1,4 @@
-LAMBDA_NAME := serial-number-example.zip
-BUILD_DATE :=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
-VCS_REF :=`git rev-parse --short HEAD`
-
-all: | build
+all: | build package
 
 clean: mostlyclean
 	-@rm -rfv packages
@@ -18,4 +14,10 @@ test:
 
 build: mostlyclean
 	dotnet restore
-	dotnet publish src/Service.Lambda.Console/ --configuration Release
+	dotnet publish src/Service.Lambda/ --configuration Release
+
+package:
+	cd ./src/Service.Lambda/bin/Release/netcoreapp1.0/publish/ && zip serial-number-handler.zip -r . *
+
+upload:
+	aws s3 cp src/Service.Lambda/bin/Release/netcoreapp1.0/publish/serial-number-handler.zip s3://linn.lambdas/serial-number-handler-${LAMBDA_TAG}.zip

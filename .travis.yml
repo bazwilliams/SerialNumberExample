@@ -3,9 +3,14 @@ mono: none
 sudo: required
 dist: trusty
 dotnet: 1.0.0
-cache:
-  directories:
-    - packages
+before_install: 
+  - curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+  - unzip awscli-bundle.zip
+  - ./awscli-bundle/install -b ~/bin/aws
+  - export PATH=~/bin:$PATH
 script:
   - make
   - make test
+after_success:
+  - make package
+  - LAMBDA_TAG=${TRAVIS_BUILD_NUMBER} make upload
