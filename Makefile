@@ -1,4 +1,4 @@
-all: | build package
+all: | build
 
 clean: mostlyclean
 	-@rm -rfv packages
