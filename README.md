@@ -5,6 +5,6 @@ Example C# Application built on travis
 This is an example app originally used in my tutorial at:
 http://blog.bjw.me.uk/2016/04/how-linn-push-dotnet-dockers-using.html
 
-A Later talk introduced CloudFormation with data backed by AWS DynamoDb and served from ECS
+In Feb 2017, a talk introduced CloudFormation with data backed by AWS DynamoDb and served from ECS.
 
-Another talk dropped Docker in favoud or API Gateway and AWS Lambda. 
+In July 2017, a talk dropped Docker in favoud or API Gateway and AWS Lambda.

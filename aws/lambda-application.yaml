@@ -1,0 +1,136 @@
+Description: "Serial Number Example Application"
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  lambdaTag:
+    Type: String
+    Description: "Lambda tag to deploy"
+
+Resources:
+  LambdaRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: "Allow"
+          Principal:
+            Service: "lambda.amazonaws.com"
+          Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+      - PolicyName: "readandwritedynamodbsequences"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: "Allow"
+            Action:
+            - "dynamodb:GetItem"
+            - "dynamodb:PutItem"
+            Resource: !ImportValue serialnumberexample-persistence-sequences-table-arn
+      - PolicyName: "CloudWatchLogsAccess"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*"
+
+  Lambda:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Environment:
+        Variables:
+          sequencesTableName: !ImportValue serialnumberexample-persistence-sequences-table-name
+      Runtime: "dotnetcore1.0"
+      Code:
+        S3Bucket: linn.lambdas.london
+        S3Key: !Sub "serial-number-handler-${lambdaTag}.zip"
+      Handler: Service.Lambda::SerialNumber.Service.Lambda.Handlers::SerialisedProductHandler
+      Role: !GetAtt LambdaRole.Arn
+      Timeout: 30
+
+  LambdaInvokePermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      FunctionName: !Ref Lambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+
+  Api:
+    Type: "AWS::ApiGateway::RestApi"
+    Properties:
+      Body:
+        swagger: "2.0"
+        info:
+          version: "1.0.0"
+          title: "Serial Number Example"
+        host: "apigw.linn.co.uk"
+        basePath: "/v2"
+        schemes:
+        - "https"
+        paths:
+          /serial-numbers/:
+            post:
+              summary: "Create a new serial number record"
+              operationId: "addSerialNumber"
+              consumes:
+              - "application/json"
+              produces:
+              - "application/json"
+              parameters:
+              - in: "body"
+                name: "body"
+                description: "Details of the product to be serialised"
+                required: true
+                schema:
+                  $ref: "#/definitions/CreateSerialisedProduct"
+              responses:
+                "200":
+                  description: "Succesful Operation"
+                  schema:
+                    $ref: '#/definitions/SerialisedProduct'
+                "400":
+                  description: "Bad Request"
+              x-amazon-apigateway-integration:
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Lambda.Arn}/invocations"
+                httpMethod: POST
+                type: aws
+                responses:
+                  default:
+                    statusCode: 200
+                    responseTemplates:
+                      application/json: "#set ($root=$input.path('$')) $root"
+        definitions:
+          SerialisedProduct:
+            type: "object"
+            title: "Serialised Product"
+            properties:
+              productName:
+                type: "string"
+              serialNumber:
+                type: "array"
+                items:
+                  type: "integer"
+          CreateSerialisedProduct:
+            type: "object"
+            title: "Create Serialised Product"
+            properties:
+              productName:
+                type: "string"
+              productType:
+                type: "string"
+                description: "Type of product"
+                enum:
+                - "speakers"
+                - "streamer"
+                - "turntable"
+
+  ApiDeployment:
+    Type: "AWS::ApiGateway::Deployment"
+    Properties:
+      RestApiId: !Ref Api
+      StageName: "v1"

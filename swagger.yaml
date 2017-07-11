@@ -1,0 +1,56 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Serial Number Example"
+host: "apigw.linn.co.uk"
+basePath: "/v2"
+schemes:
+- "https"
+paths:
+  /serial-numbers/:
+    post:
+      summary: "Create a new serial number record"
+      description: ""
+      operationId: "addSerialNumber"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Details of the product to be serialised"
+        required: true
+        schema:
+          $ref: "#/definitions/CreateSerialisedProduct"
+      responses:
+        200:
+          description: "Succesful Operation"
+          schema:
+            $ref: '#/definitions/SerialisedProduct'
+        400:
+          description: "Bad Request"
+definitions:
+  SerialisedProduct:
+    type: "object"
+    title: "Serialised Product"
+    properties:
+      productName:
+        type: "string"
+      serialNumber:
+        type: "array"
+        items:
+          type: "integer"
+  CreateSerialisedProduct:
+    type: "object"
+    title: "Create Serialised Product"
+    properties:
+      productName:
+        type: "string"
+      productType:
+        type: "string"
+        description: "Type of product"
+        enum:
+        - "speakers"
+        - "streamer"
+        - "turntable"

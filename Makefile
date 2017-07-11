@@ -20,4 +20,4 @@ package:
 	cd ./src/Service.Lambda/bin/Release/netcoreapp1.0/publish/ && zip serial-number-handler.zip -r . *
 
 upload:
-	aws s3 cp src/Service.Lambda/bin/Release/netcoreapp1.0/publish/serial-number-handler.zip s3://linn.lambdas/serial-number-handler-${LAMBDA_TAG}.zip
+	aws s3 cp src/Service.Lambda/bin/Release/netcoreapp1.0/publish/serial-number-handler.zip s3://linn.lambdas.london/serial-number-handler-${LAMBDA_TAG}.zip
