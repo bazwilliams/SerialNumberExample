@@ -1,11 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <AssemblyName>Resources</AssemblyName>
+    <AssemblyName>SerialNumber.Resources</AssemblyName>
     <PackageId>Resources</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <RootNamespace>SerialNumber.Resources</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Runtime">
+      <HintPath>..\..\..\..\Users\barryw\.nuget\packages\system.runtime\4.3.0\ref\netstandard1.5\System.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 
 </Project>

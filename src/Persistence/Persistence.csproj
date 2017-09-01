@@ -1,11 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <DebugType>portable</DebugType>
-    <AssemblyName>Persistence</AssemblyName>
+    <AssemblyName>SerialNumber.Persistence</AssemblyName>
     <PackageId>Persistence</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <RootNamespace>SerialNumber.Persistence</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +14,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.DynamoDbv2" Version="3.3.3" />
+    <PackageReference Include="AWSSDK.DynamoDbv2" Version="3.3.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Runtime">
+      <HintPath>..\..\..\..\Users\barryw\.nuget\packages\system.runtime\4.3.0\ref\netstandard1.5\System.Runtime.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

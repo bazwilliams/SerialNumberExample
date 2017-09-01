@@ -1,7 +1,6 @@
-﻿namespace Domain.Facade.Tests.SerialNumberFactorySpecs
+﻿namespace SerialNumber.Domain.Facade.Tests.SerialNumberFactorySpecs
 {
     using System.Collections.Generic;
-
     using System.Threading;
 
     using FluentAssertions;

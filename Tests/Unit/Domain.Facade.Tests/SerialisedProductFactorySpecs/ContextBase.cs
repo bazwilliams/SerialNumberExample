@@ -1,4 +1,4 @@
-﻿namespace Domain.Facade.Tests.SerialisedProductFactorySpecs
+﻿namespace SerialNumber.Domain.Facade.Tests.SerialisedProductFactorySpecs
 {
     using NUnit.Framework;
 

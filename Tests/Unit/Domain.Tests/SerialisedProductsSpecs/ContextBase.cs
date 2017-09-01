@@ -1,4 +1,4 @@
-﻿namespace Domain.Tests.SerialisedProductsSpecs
+﻿namespace SerialNumber.Domain.Tests.SerialisedProductsSpecs
 {
     using NSubstitute;
 

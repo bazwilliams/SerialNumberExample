@@ -1,11 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <AssemblyName>Domain.Facade</AssemblyName>
+    <AssemblyName>SerialNumber.Domain.Facade</AssemblyName>
     <PackageId>Domain.Facade</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <RootNamespace>SerialNumber.Domain.Facade</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

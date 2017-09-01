@@ -1,11 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.0</TargetFramework>
-    <AssemblyName>Service.Lambda</AssemblyName>
+    <AssemblyName>SerialNumber.Service.Lambda</AssemblyName>
     <PackageId>Service.Lambda</PackageId>
     <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+    <RootNamespace>SerialNumber.Service.Lambda</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

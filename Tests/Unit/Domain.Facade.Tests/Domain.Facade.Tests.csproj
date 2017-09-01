@@ -1,13 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <DebugType>portable</DebugType>
-    <AssemblyName>Domain.Facade.Tests</AssemblyName>
+    <AssemblyName>SerialNumber.Domain.Facade.Tests</AssemblyName>
     <PackageId>Domain.Facade.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+    <RootNamespace>SerialNumber.Domain.Facade.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,8 +17,11 @@
     <PackageReference Include="dotnet-test-nunit" Version="3.4.0-beta-3" />
     <PackageReference Include="FluentAssertions" Version="4.19.0" />
     <PackageReference Include="NSubstitute" Version="2.0.0-rc" />
-    <PackageReference Include="NUnit" Version="3.6.1" />
-    <PackageReference Include="Domain.Facade" Version="1.0.0-*" />
+    <PackageReference Include="NUnit" Version="3.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Domain.Facade\Domain.Facade.csproj" />
   </ItemGroup>
 
 </Project>

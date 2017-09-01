@@ -1,11 +1,10 @@
 ﻿namespace SerialNumber.Domain.Facade
 {
-    using SerialNumber.Domain.Factories;
-
     using System.Collections.Generic;
-
     using System.Threading;
-    using System.Threading.Tasks;    
+    using System.Threading.Tasks;
+
+    using SerialNumber.Domain.Factories;
 
     public class SerialNumberFactory : ISerialNumberFactory
     {

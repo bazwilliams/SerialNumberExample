@@ -1,12 +1,12 @@
-﻿namespace Domain.Tests.SerialisedProductsSpecs
+﻿namespace SerialNumber.Domain.Tests.SerialisedProductsSpecs
 {
+    using System.Threading;
+
     using FluentAssertions;
 
     using NSubstitute;
 
     using NUnit.Framework;
-
-    using System.Threading;
 
     [TestFixture]
     public class WhenSerialising : ContextBase
@@ -17,7 +17,7 @@
         public void EstablishContext()
         {
             this.SerialNumberFactory.Create(1, Arg.Any<CancellationToken>()).Returns(new[] { ExpectedSerialNumber });
-            this.Sut.GenerateSerialNumber(this.SerialNumberFactory, CancellationToken.None);
+            this.Sut.GenerateSerialNumber(this.SerialNumberFactory, CancellationToken.None).Wait();
         }
 
         [Test]
