@@ -8,10 +8,4 @@
     <RootNamespace>SerialNumber.Resources</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Runtime">
-      <HintPath>..\..\..\..\Users\barryw\.nuget\packages\system.runtime\4.3.0\ref\netstandard1.5\System.Runtime.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

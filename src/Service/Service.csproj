@@ -6,6 +6,7 @@
     <PackageId>Service</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <RootNamespace>SerialNumber.Service</RootNamespace>
+    <StartupObject />
   </PropertyGroup>
 
   <ItemGroup>
