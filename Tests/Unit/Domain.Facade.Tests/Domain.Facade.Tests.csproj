@@ -6,7 +6,6 @@
     <AssemblyName>SerialNumber.Domain.Facade.Tests</AssemblyName>
     <PackageId>Domain.Facade.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
     <RootNamespace>SerialNumber.Domain.Facade.Tests</RootNamespace>
   </PropertyGroup>
 

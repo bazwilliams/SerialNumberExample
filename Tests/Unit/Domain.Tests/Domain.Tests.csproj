@@ -6,7 +6,6 @@
     <AssemblyName>SerialNumber.Domain.Tests</AssemblyName>
     <PackageId>Domain.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
     <RootNamespace>SerialNumber.Domain.Tests</RootNamespace>
   </PropertyGroup>
 

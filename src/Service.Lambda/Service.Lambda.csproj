@@ -4,8 +4,10 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>SerialNumber.Service.Lambda</AssemblyName>
     <PackageId>Service.Lambda</PackageId>
-    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
     <RootNamespace>SerialNumber.Service.Lambda</RootNamespace>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
   </PropertyGroup>
 
   <ItemGroup>

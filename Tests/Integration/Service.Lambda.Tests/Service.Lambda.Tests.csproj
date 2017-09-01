@@ -6,7 +6,6 @@
     <AssemblyName>SerialNumber.Service.Lambda.Tests</AssemblyName>
     <PackageId>Service.Lambda.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
     <RootNamespace>SerialNumber.Service.Lambda.Tests</RootNamespace>
   </PropertyGroup>
 

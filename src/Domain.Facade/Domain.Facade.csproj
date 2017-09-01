@@ -4,7 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>SerialNumber.Domain.Facade</AssemblyName>
     <PackageId>Domain.Facade</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <RootNamespace>SerialNumber.Domain.Facade</RootNamespace>
   </PropertyGroup>
 

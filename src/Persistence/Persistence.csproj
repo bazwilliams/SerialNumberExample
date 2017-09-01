@@ -5,7 +5,6 @@
     <DebugType>portable</DebugType>
     <AssemblyName>SerialNumber.Persistence</AssemblyName>
     <PackageId>Persistence</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <RootNamespace>SerialNumber.Persistence</RootNamespace>
   </PropertyGroup>
 

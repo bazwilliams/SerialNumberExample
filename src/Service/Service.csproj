@@ -4,9 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>SerialNumber.Service</AssemblyName>
     <PackageId>Service</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <RootNamespace>SerialNumber.Service</RootNamespace>
     <StartupObject />
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>

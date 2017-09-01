@@ -5,7 +5,6 @@
     <AssemblyName>SerialNumber.Service.Lambda.Console</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>Service.Lambda.Console</PackageId>
-    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
