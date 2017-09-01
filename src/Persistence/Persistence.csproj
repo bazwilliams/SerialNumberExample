@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.DynamoDbv2" Version="3.3.0.3" />
+    <PackageReference Include="AWSSDK.DynamoDbv2" Version="3.3.4.17" />
   </ItemGroup>
 
   <ItemGroup>

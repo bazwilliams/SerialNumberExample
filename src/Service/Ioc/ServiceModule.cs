@@ -2,27 +2,23 @@
 {
     using System.Collections.Generic;
 
-    using Autofac;
-
     using Amazon.DynamoDBv2;
 
+    using Autofac;
+
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
     using SerialNumber.Domain.Facade;
-    
     using SerialNumber.Domain.Factories;
-
-    using SerialNumber.Resources;
-
     using SerialNumber.Persistence.Tables;
+    using SerialNumber.Resources;
 
     public class ServiceModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
             var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>>() { new KeyValuePair<string, string>("serialNumberSeed", "42") });
+            configurationBuilder.AddInMemoryCollection(new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("serialNumberSeed", "42") });
             configurationBuilder.AddEnvironmentVariables();
 
             builder.RegisterInstance(configurationBuilder.Build())
