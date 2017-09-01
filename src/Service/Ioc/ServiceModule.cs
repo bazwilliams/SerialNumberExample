@@ -7,6 +7,7 @@
     using Autofac;
 
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
     using SerialNumber.Domain.Facade;
     using SerialNumber.Domain.Factories;
