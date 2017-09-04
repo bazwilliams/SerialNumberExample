@@ -1,12 +1,5 @@
 version: 0.2
 phases:
-  install:
-    commands:
-    - apt-get install make unzip curl
-    - curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-    - unzip awscli-bundle.zip
-    - ./awscli-bundle/install -b ~/bin/aws
-    - export PATH=~/bin:$PATH
   build:
     commands:
     - make
@@ -14,4 +7,4 @@ phases:
   post_build:
     commands:
     - make package
-    - LAMBDA_TAG=${TRAVIS_BUILD_NUMBER} make upload
+    - LAMBDA_TAG=AWSCODEBUILD make upload
