@@ -25,6 +25,12 @@ Resources:
           - Effect: Allow
             Action:
             - s3:PutObject
+            - s3:GetObject
+            - s3:GetObjectVersion
+            Resource: !Sub "arn:aws:s3:::codepipeline-${AWS::Region}-*/*"
+          - Effect: Allow
+            Action:
+            - s3:PutObject
             Resource: !GetAtt artefactsBucket.Arn
           - Effect: Allow
             Action:
