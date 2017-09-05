@@ -1,0 +1,180 @@
+Description: "SerialNumberExample: Continuous Integration"
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+
+  artefactsBucket:
+    Type: "AWS::S3::Bucket"
+
+  ciBuildRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: "Allow"
+          Principal:
+            Service: "codebuild.amazonaws.com"
+          Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+      - PolicyName: "BuildPolicy"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action:
+            - s3:PutObject
+            Resource: !GetAtt artefactsBucket.Arn
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: 
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group/aws/codebuild/serial-number-example-codepipeline"
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group/aws/codebuild/serial-number-example-codepipeline/*"
+
+  ciPipelineRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: "Allow"
+          Principal:
+            Service: "codepipeline.amazonaws.com"
+          Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+      - PolicyName: "PipelinePolicy"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Action:
+            - s3:PutObject
+            Resource: !GetAtt artefactsBucket.Arn
+            Effect: Allow
+          - Action:
+            - codecommit:CancelUploadArchive
+            - codecommit:GetBranch
+            - codecommit:GetCommit
+            - codecommit:GetUploadArchiveStatus
+            - codecommit:UploadArchive
+            Resource: "*"
+            Effect: Allow
+          - Action:
+            - codedeploy:CreateDeployment
+            - codedeploy:GetApplicationRevision
+            - codedeploy:GetDeployment
+            - codedeploy:GetDeploymentConfig
+            - codedeploy:RegisterApplicationRevision
+            Resource: "*"
+            Effect: Allow
+          - Action:
+            - elasticbeanstalk:*
+            - ec2:*
+            - elasticloadbalancing:*
+            - autoscaling:*
+            - cloudwatch:*
+            - s3:*
+            - sns:*
+            - cloudformation:*
+            - rds:*
+            - sqs:*
+            - ecs:*
+            - iam:PassRole
+            Resource: "*"
+            Effect: Allow
+          - Action:
+            - lambda:InvokeFunction
+            - lambda:ListFunctions
+            Resource: "*"
+            Effect: Allow
+          - Action:
+            - opsworks:CreateDeployment
+            - opsworks:DescribeApps
+            - opsworks:DescribeCommands
+            - opsworks:DescribeDeployments
+            - opsworks:DescribeInstances
+            - opsworks:DescribeStacks
+            - opsworks:UpdateApp
+            - opsworks:UpdateStack
+            Resource: "*"
+            Effect: Allow
+          - Action:
+            - cloudformation:CreateStack
+            - cloudformation:DeleteStack
+            - cloudformation:DescribeStacks
+            - cloudformation:UpdateStack
+            - cloudformation:CreateChangeSet
+            - cloudformation:DeleteChangeSet
+            - cloudformation:DescribeChangeSet
+            - cloudformation:ExecuteChangeSet
+            - cloudformation:SetStackPolicy
+            - cloudformation:ValidateTemplate
+            - iam:PassRole
+            Resource: "*"
+            Effect: Allow
+          - Action:
+            - codebuild:BatchGetBuilds
+            - codebuild:StartBuild
+            Resource: "*"
+            Effect: Allow
+
+  codeBuild:
+    Type: "AWS::CodeBuild::Project"
+    Properties: 
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: docker.io/linn/ci:latest
+        PrivilegedMode: True
+        Type: LINUX_CONTAINER
+      Name: serial-number-example-codebuild
+      ServiceRole: !GetAtt ciBuildRole.Arn
+      Source:
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 5
+
+  codePipeline:
+    Type: "AWS::CodePipeline::Pipeline"
+    Properties:
+      Name: serial-number-example-codepipeline
+      RoleArn: !GetAtt ciPipelineRole.Arn
+      Stages:
+      - Name: Source
+        Actions:
+        - Name: Source
+          ActionTypeId:
+            Category: Source
+            Owner: ThirdParty
+            Version: '1'
+            Provider: GitHub
+          OutputArtifacts:
+          - Name: SourceOutput
+          Configuration:
+            Owner: bazwilliams
+            Repo: SerialNumberExample
+            Branch: aws-build
+            OAuthToken: token
+          RunOrder: 1
+      - Name: Build
+        Actions:
+        - Name: Build
+          ActionTypeId:
+            Category: Build
+            Owner: AWS
+            Version: '1'
+            Provider: CodeBuild
+          InputArtifacts:
+          - Name: SourceOutput
+          OutputArtifacts:
+          - Name: BuildOutput
+          Configuration:
+            ProjectName: !Ref codeBuild
+          RunOrder: 1
+      ArtifactStore:
+        Type: S3
+        Location: !Ref artefactsBucket
