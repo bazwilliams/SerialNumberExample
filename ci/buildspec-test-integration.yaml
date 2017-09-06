@@ -1,0 +1,5 @@
+version: 0.2
+phases:
+  build:
+    commands:
+    - find ./Tests/Integration/ -type f -name *.csproj -print0 | xargs -0 -n 1 dotnet test

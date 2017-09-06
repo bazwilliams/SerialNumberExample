@@ -43,8 +43,10 @@ Resources:
             Resource: 
             - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-build"
             - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-build:*"
-            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-test"
-            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-test:*"
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-unittest"
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-unittest:*"
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-integrationtest"
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-integrationtest:*"
             - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-package"
             - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-package:*"
 
@@ -152,7 +154,7 @@ Resources:
         Type: CODEPIPELINE
       TimeoutInMinutes: 5
 
-  codeTest:
+  codeBuildUnitTest:
     Type: "AWS::CodeBuild::Project"
     Properties: 
       Artifacts:
@@ -162,14 +164,31 @@ Resources:
         Image: docker.io/linn/ci:latest
         PrivilegedMode: True
         Type: LINUX_CONTAINER
-      Name: serial-number-example-codebuild-test
+      Name: serial-number-example-codebuild-unittest
       ServiceRole: !GetAtt ciBuildRole.Arn
       Source:
-        BuildSpec: ./ci/buildspec-test.yaml
+        BuildSpec: ./ci/buildspec-test-unit.yaml
         Type: CODEPIPELINE
       TimeoutInMinutes: 5
 
-  codePackage:
+  codeBuildIntegrationTest:
+    Type: "AWS::CodeBuild::Project"
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: docker.io/linn/ci:latest
+        PrivilegedMode: True
+        Type: LINUX_CONTAINER
+      Name: serial-number-example-codebuild-integrationtest
+      ServiceRole: !GetAtt ciBuildRole.Arn
+      Source:
+        BuildSpec: ./ci/buildspec-test-integration.yaml
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 5
+
+  codeBuildPackage:
     Type: "AWS::CodeBuild::Project"
     Properties: 
       Artifacts:
@@ -225,7 +244,7 @@ Resources:
           RunOrder: 1
       - Name: Test
         Actions:
-        - Name: Test
+        - Name: Unit-Test
           ActionTypeId:
             Category: Test
             Owner: AWS
@@ -234,7 +253,18 @@ Resources:
           InputArtifacts:
           - Name: BuildOutput
           Configuration:
-            ProjectName: !Ref codeTest
+            ProjectName: !Ref codeBuildUnitTest
+          RunOrder: 1
+        - Name: Integration-Test
+          ActionTypeId:
+            Category: Test
+            Owner: AWS
+            Version: '1'
+            Provider: CodeBuild
+          InputArtifacts:
+          - Name: BuildOutput
+          Configuration:
+            ProjectName: !Ref codeBuildIntegrationTest
           RunOrder: 1
       - Name: Package
         Actions:
@@ -249,7 +279,7 @@ Resources:
           OutputArtifacts:
           - Name: PackageOutput
           Configuration:
-            ProjectName: !Ref codeTest
+            ProjectName: !Ref codeBuildPackage
           RunOrder: 1
       ArtifactStore:
         Type: S3
