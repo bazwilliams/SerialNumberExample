@@ -45,6 +45,8 @@ Resources:
             - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-build:*"
             - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-test"
             - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-test:*"
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-package"
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-package:*"
 
   ciPipelineRole:
     Type: "AWS::IAM::Role"
@@ -146,7 +148,7 @@ Resources:
       Name: serial-number-example-codebuild-build
       ServiceRole: !GetAtt ciBuildRole.Arn
       Source:
-        BuildSpec: ./ci/buildspec-build.xml
+        BuildSpec: ./ci/buildspec-build.yaml
         Type: CODEPIPELINE
       TimeoutInMinutes: 5
 
@@ -163,7 +165,24 @@ Resources:
       Name: serial-number-example-codebuild-test
       ServiceRole: !GetAtt ciBuildRole.Arn
       Source:
-        BuildSpec: ./ci/buildspec-test.xml
+        BuildSpec: ./ci/buildspec-test.yaml
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 5
+
+  codePackage:
+    Type: "AWS::CodeBuild::Project"
+    Properties: 
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: docker.io/linn/ci:latest
+        PrivilegedMode: True
+        Type: LINUX_CONTAINER
+      Name: serial-number-example-codebuild-package
+      ServiceRole: !GetAtt ciBuildRole.Arn
+      Source:
+        BuildSpec: ./ci/buildspec-package.yaml
         Type: CODEPIPELINE
       TimeoutInMinutes: 5
 
@@ -214,6 +233,21 @@ Resources:
             Provider: CodeBuild
           InputArtifacts:
           - Name: BuildOutput
+          Configuration:
+            ProjectName: !Ref codeTest
+          RunOrder: 1
+      - Name: Package Lambda
+        Actions:
+        - Name: Package Lambda
+          ActionTypeId:
+            Category: Build
+            Owner: AWS
+            Version: '1'
+            Provider: CodeBuild
+          InputArtifacts:
+          - Name: BuildOutput
+          OutputArtifacts:
+          - Name: PackageOutput
           Configuration:
             ProjectName: !Ref codeTest
           RunOrder: 1

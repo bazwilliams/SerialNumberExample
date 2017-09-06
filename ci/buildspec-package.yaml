@@ -1,0 +1,10 @@
+version: 0.2
+phases:
+  build:
+    commands:
+    - dotnet publish src/Service.Lambda/ --configuration Release
+
+artifacts:
+  files:
+    src/Service.Lambda/bin/Release/netcoreapp2.0/publish/**/*
+  discard-paths: true

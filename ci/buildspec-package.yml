@@ -1,6 +1,0 @@
-version: 0.2
-phases:
-  build:
-    commands:
-    - cd ./src/Service.Lambda/bin/Release/netcoreapp2.0/publish/ && zip serial-number-handler.zip -r . *
-    - aws s3 cp src/Service.Lambda/bin/Release/netcoreapp2.0/publish/serial-number-handler.zip s3://linn.lambdas.london/serial-number-handler-${CODEBUILD_BUILD_ID}.zip
