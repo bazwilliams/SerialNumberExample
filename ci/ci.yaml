@@ -1,6 +1,11 @@
 Description: "SerialNumberExample: Continuous Integration"
 AWSTemplateFormatVersion: "2010-09-09"
 
+Parameters:
+  githubToken:
+    Type: String
+    Description: "GitHub Personal Access Token (https://github.com/settings/tokens)"
+
 Resources:
 
   artefactsBucket:
@@ -27,19 +32,19 @@ Resources:
             - s3:PutObject
             - s3:GetObject
             - s3:GetObjectVersion
-            Resource: !Sub "arn:aws:s3:::codepipeline-${AWS::Region}-*/*"
-          - Effect: Allow
-            Action:
-            - s3:PutObject
-            Resource: !GetAtt artefactsBucket.Arn
+            Resource:
+            - !GetAtt artefactsBucket.Arn
+            - !Sub "${artefactsBucket.Arn}/*"
           - Effect: Allow
             Action:
             - logs:CreateLogGroup
             - logs:CreateLogStream
             - logs:PutLogEvents
             Resource: 
-            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild"
-            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild:*"
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-build"
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-build:*"
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-test"
+            - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/serial-number-example-codebuild-test:*"
 
   ciPipelineRole:
     Type: "AWS::IAM::Role"
@@ -138,9 +143,27 @@ Resources:
         Image: docker.io/linn/ci:latest
         PrivilegedMode: True
         Type: LINUX_CONTAINER
-      Name: serial-number-example-codebuild
+      Name: serial-number-example-codebuild-build
       ServiceRole: !GetAtt ciBuildRole.Arn
       Source:
+        BuildSpec: ./ci/buildspec-build.xml
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 5
+
+  codeTest:
+    Type: "AWS::CodeBuild::Project"
+    Properties: 
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: docker.io/linn/ci:latest
+        PrivilegedMode: True
+        Type: LINUX_CONTAINER
+      Name: serial-number-example-codebuild-test
+      ServiceRole: !GetAtt ciBuildRole.Arn
+      Source:
+        BuildSpec: ./ci/buildspec-test.xml
         Type: CODEPIPELINE
       TimeoutInMinutes: 5
 
@@ -164,7 +187,7 @@ Resources:
             Owner: bazwilliams
             Repo: SerialNumberExample
             Branch: aws-build
-            OAuthToken: token
+            OAuthToken: !Ref githubToken
           RunOrder: 1
       - Name: Build
         Actions:
@@ -180,6 +203,19 @@ Resources:
           - Name: BuildOutput
           Configuration:
             ProjectName: !Ref codeBuild
+          RunOrder: 1
+      - Name: Test
+        Actions:
+        - Name: Test
+          ActionTypeId:
+            Category: Test
+            Owner: AWS
+            Version: '1'
+            Provider: CodeBuild
+          InputArtifacts:
+          - Name: BuildOutput
+          Configuration:
+            ProjectName: !Ref codeTest
           RunOrder: 1
       ArtifactStore:
         Type: S3
