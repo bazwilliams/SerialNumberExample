@@ -6,3 +6,6 @@ phases:
   build:
     commands:
     - dotnet build
+
+artifacts:
+  files: "**/*"

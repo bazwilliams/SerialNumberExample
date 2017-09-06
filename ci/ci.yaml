@@ -236,9 +236,9 @@ Resources:
           Configuration:
             ProjectName: !Ref codeTest
           RunOrder: 1
-      - Name: Package Lambda
+      - Name: Package
         Actions:
-        - Name: Package Lambda
+        - Name: Package-Lambda
           ActionTypeId:
             Category: Build
             Owner: AWS
