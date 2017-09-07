@@ -144,7 +144,7 @@ Resources:
         Type: CODEPIPELINE
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: docker.io/linn/ci:latest
+        Image: docker.io/microsoft/dotnet:2-sdk
         PrivilegedMode: True
         Type: LINUX_CONTAINER
       Name: serial-number-example-codebuild-build
@@ -161,7 +161,7 @@ Resources:
         Type: CODEPIPELINE
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: docker.io/linn/ci:latest
+        Image: docker.io/microsoft/dotnet:2-sdk
         PrivilegedMode: True
         Type: LINUX_CONTAINER
       Name: serial-number-example-codebuild-unittest
@@ -178,7 +178,7 @@ Resources:
         Type: CODEPIPELINE
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: docker.io/linn/ci:latest
+        Image: docker.io/microsoft/dotnet:2-sdk
         PrivilegedMode: True
         Type: LINUX_CONTAINER
       Name: serial-number-example-codebuild-integrationtest
@@ -195,7 +195,7 @@ Resources:
         Type: CODEPIPELINE
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: docker.io/linn/ci:latest
+        Image: docker.io/microsoft/dotnet:2-sdk
         PrivilegedMode: True
         Type: LINUX_CONTAINER
       Name: serial-number-example-codebuild-package
