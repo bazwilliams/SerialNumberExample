@@ -5,7 +5,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow port 80 to ecs host
-      VpcId: vpc-20bc4c49
+      VpcId: vpc-b4bce5d1
       SecurityGroupIngress:
         - IpProtocol: 'tcp'
           FromPort: 80
@@ -23,8 +23,8 @@ Resources:
       Name: "api"
       Scheme: "internet-facing"
       Subnets:
-        - subnet-a228cdd9
-        - subnet-0bf5cb41
+        - subnet-24d1891e
+        - subnet-d8e86081
       SecurityGroups:
         - !Ref albSecurityGroup
       Tags:
@@ -44,27 +44,27 @@ Resources:
   defaultTargetGroup:
     Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
     Properties:
-      Name: "default-api"
       HealthCheckPath : "/lb?stats"
       HealthCheckPort : 8080
       Port: 80
       Protocol: "HTTP"
+      TargetType: ip
       Tags:
         - Key: "cit"
           Value: "IT"
-      VpcId: vpc-20bc4c49
+      VpcId: vpc-b4bce5d1
 
   serialNumberExampleTargetGroup:
     Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
     Properties:
-      Name: "serial-number-example-api"
       HealthCheckPath : "/healthcheck"
       Port: 80
       Protocol: "HTTP"
+      TargetType: ip
       Tags:
         - Key: "cit"
           Value: "IT"
-      VpcId: vpc-20bc4c49
+      VpcId: vpc-b4bce5d1
 
   serialNumberExampleListenerRule:
     Type: "AWS::ElasticLoadBalancingV2::ListenerRule"

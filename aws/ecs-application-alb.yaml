@@ -10,37 +10,21 @@ Parameters:
     Description: "Docker tag to deploy"
 
 Resources:
-  ecsServiceRole:
-    Type: "AWS::IAM::Role"
+  ecsServiceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
     Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Effect: "Allow"
-            Principal:
-              Service:
-                - "ecs.amazonaws.com"
-            Action:
-              - "sts:AssumeRole"
-      Path: "/"
-      
-  ecsServiceRolePolicies:
-    Type: "AWS::IAM::Policy"
-    Properties:
-      PolicyName: "ecsServicePolicy"
-      PolicyDocument:
-        Statement:
-          Effect: "Allow"
-          Action:
-            - "ec2:AuthorizeSecurityGroupIngress"
-            - "ec2:Describe*"
-            - "elasticloadbalancing:DeregisterInstancesFromLoadBalancer"
-            - "elasticloadbalancing:DeregisterTargets"
-            - "elasticloadbalancing:Describe*"
-            - "elasticloadbalancing:RegisterInstancesWithLoadBalancer"
-            - "elasticloadbalancing:RegisterTargets"
-          Resource: "*"
-      Roles:
-        - !Ref ecsServiceRole
+      GroupDescription: Allow everything to ecs service
+      VpcId: vpc-b4bce5d1
+      SecurityGroupIngress:
+        - IpProtocol: '-1'
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: '-1'
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
 
   taskDefinitionRole:
     Type: "AWS::IAM::Role"
@@ -70,10 +54,13 @@ Resources:
     Type: "AWS::ECS::TaskDefinition"
     Properties:
       TaskRoleArn: !GetAtt taskDefinitionRole.Arn
+      RequiresCompatibilities:
+        - FARGATE
+      NetworkMode: awsvpc
+      Cpu: 256
+      Memory: 512
       ContainerDefinitions:
         - Name: serial-number-example
-          Cpu: "1"
-          Essential: true
           Image: !Sub docker.io/bazwilliams/serial-number-example:${dockerTag}
           PortMappings:
             - ContainerPort: 8080
@@ -82,15 +69,23 @@ Resources:
               Value: !Ref AWS::Region
             - Name: sequencesTableName
               Value: !ImportValue serialnumberexample-persistence-sequences-table-name
-          Memory: "150"
 
   service:
     Type: "AWS::ECS::Service"
     Properties:
       Cluster: !Ref targetCluster
       DesiredCount: 1
+      LaunchType: FARGATE
       TaskDefinition: !Ref taskDefinition
-      Role: !Ref ecsServiceRole
+#       Role: !Ref ecsServiceRole
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+          - !Ref ecsServiceSecurityGroup
+          Subnets:
+          - subnet-24d1891e
+          - subnet-d8e86081
       LoadBalancers:
         - ContainerName: serial-number-example
           ContainerPort: 8080
